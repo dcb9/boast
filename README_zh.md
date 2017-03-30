@@ -16,7 +16,7 @@ $ cat .boast.json
 {
 	"debug_addr": ":8079",
 	"list": [
-		{ "url": "https://www.baidu.com/", "addr": ":8080" }
+		{ "url": "https://www.baidu.com/", "addr": ":8080" },
 		{ "url": "https://github.com/", "addr": ":8081" }
 	]
 }
