@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"bytes"
+	"compress/gzip"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -54,6 +55,12 @@ func NewReq(req *http.Request) *Req {
 func NewResp(resp *http.Response) *Resp {
 	var body []byte
 	resp.Body, body = copyBody(resp.Body)
+
+	switch resp.Header.Get("Content-Encoding") {
+	case "gzip":
+		g, _ := gzip.NewReader(bytes.NewReader(body))
+		body, _ = ioutil.ReadAll(g)
+	}
 
 	return &Resp{
 		Proto:  resp.Proto,

@@ -19,6 +19,10 @@ type Transport struct {
 func (t *Transport) RoundTrip(req *http.Request) (resp *http.Response, err error) {
 	beginAt := time.Now()
 	tsReq := NewReq(req)
+	if _, ok := req.Header["Accept-Encoding"]; ok {
+		req.Header.Set("Accept-Encoding", "gzip")
+	}
+
 	resp, err = t.RoundTripper.RoundTrip(req)
 	if err != nil {
 		return nil, err
