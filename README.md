@@ -7,7 +7,7 @@ Boast
 
 ## Install
 
-Download the latest binary file from the [Releases](http://blog.phpor.me/boast) page.
+Download the latest binary file from the [Releases](https://github.com/dcb9/boast/releases) page.
 
 (darwin_amd64.tar.gz is for Mac OS X users)
 

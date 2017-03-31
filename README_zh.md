@@ -7,7 +7,7 @@ Boast
 
 ## 安装
 
-下载最新的[二进制](http://blog.phpor.me/boast)文件
+下载最新的[二进制](https://github.com/dcb9/boast/releases)文件
 
 ## 使用
 
