@@ -9,9 +9,10 @@ import (
 )
 
 type Request struct {
-	Method  string `json:"Method"`
-	Path    string `json:"Path"`
-	RawText string `json:"RawText"`
+	Method      string `json:"Method"`
+	Path        string `json:"Path"`
+	RawText     string `json:"RawText"`
+	CurlCommand string `json:"CurlCommand"`
 }
 
 type Response struct {

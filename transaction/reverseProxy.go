@@ -42,6 +42,7 @@ func (t *Transport) RoundTrip(req *http.Request) (resp *http.Response, err error
 
 		t := Ts{
 			ID:         id,
+			RawReq:     req,
 			Req:        tsReq,
 			Resp:       NewResp(resp),
 			ClientAddr: req.RemoteAddr,

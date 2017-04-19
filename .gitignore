@@ -1,3 +1,4 @@
 /.idea
 /.boast.json
 .DS_Store
+/web/bindata_assetfs.go

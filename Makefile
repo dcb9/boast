@@ -4,7 +4,7 @@ tools :
 	go get github.com/laher/goxc
 
 build-fe :
-	cd frontend; npm run build; cd -
+	cd frontend; npm run build
 
 build : tools
 	go-bindata-assetfs -pkg web assets/... ; mv bindata_assetfs.go web

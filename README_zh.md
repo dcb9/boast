@@ -9,7 +9,7 @@ Boast
 
 安装 boast 包
 
-`go get https://github.com/dcb9/boast`
+`go get github.com/dcb9/boast`
 
 然后修改 server 程序
 

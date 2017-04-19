@@ -43,6 +43,11 @@
             <div class="col-8"><button class="btn replay" v-on:click="replay(cts.ID)">Replay</button></div>
           </h3>
           <div>
+            <p><a v-on:click="doDownloadCurl()" href="javascript:;">show cURL command</a></p>
+            <span v-if="downloadCurl"><a target="_blank" href="https://www.getpostman.com/docs/importing_curl">Tips</a></span>
+            <div v-if="downloadCurl" style="background-color: #c2c2c2; padding: 5px 5px 0; word-break: break-all"><pre><code style="white-space:normal;">{{ cts.Req.CurlCommand | base64Decode }}</code></pre></div>
+          </div>
+          <div>
             <pre><code>{{ cts.Req.RawText | base64Decode }}</code></pre>
           </div>
         </div>
@@ -121,6 +126,7 @@
         cts: currentTransaction,
         wsConnected: false,
         wsConn: {},
+        downloadCurl: false,
       }
     },
     created: function() {
@@ -164,9 +170,13 @@
 
         t.Selected = true;
         this.cts = t;
+        this.downloadCurl = false;
       },
       replay: function(id) {
          this.wsConn.send(JSON.stringify({Action: "replay", ID: id}))
+      },
+      doDownloadCurl: function() {
+         this.downloadCurl = !this.downloadCurl;
       }
     },
     filters: {

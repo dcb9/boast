@@ -11,6 +11,7 @@ import (
 
 	"github.com/dcb9/boast/transaction"
 	"github.com/gorilla/websocket"
+	"github.com/moul/http2curl"
 )
 
 var tsHub = transaction.TsHub
@@ -88,12 +89,14 @@ func (c *Client) sendTss(tss []*transaction.Ts) error {
 			)
 		}
 
+		curlCommand, _ := http2curl.GetCurlCommand(ts.RawReq)
 		t := Transaction{
 			ID: ts.ID,
 			Request: Request{
-				Method:  ts.Req.Method,
-				Path:    ts.Req.URL.Path,
-				RawText: base64.StdEncoding.EncodeToString([]byte(rawReq)),
+				Method:      ts.Req.Method,
+				Path:        ts.Req.URL.Path,
+				RawText:     base64.StdEncoding.EncodeToString([]byte(rawReq)),
+				CurlCommand: base64.StdEncoding.EncodeToString([]byte(curlCommand.String())),
 			},
 			Response: Response{
 				Status:  ts.Resp.Status,

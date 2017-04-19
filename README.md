@@ -9,7 +9,7 @@ Boast
 
 Install the boast package:
 
-`go get https://github.com/dcb9/boast`
+`go get github.com/dcb9/boast`
 
 After installing, modify your server file
 
