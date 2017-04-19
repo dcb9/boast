@@ -5,11 +5,53 @@ Boast
 
 “我想跟踪所有访问我 Web 服务器的请求及返回数据。”
 
-## 安装
+## 使用
+
+安装 boast 包
+
+`go get https://github.com/dcb9/boast`
+
+然后修改 server 程序
+
+```diff
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+
+	"github.com/dcb9/boast"
+)
+
+func main() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		fmt.Fprintf(w, "Welcome to the home page!")
+	}))
+
+-	// 原来的实现方式
+-	http.ListenAndServe(":8080", mux)
++	// 使用 Boast 的方式
++	server := httptest.NewServer(mux)
++	addr, debugAddr := ":8080", ":8079"
++	boast.Serve(server, addr, debugAddr)
+}
+```
+
+运行程序
+
+`go run server.go`
+
+像以前一样访问接口，然后用浏览器打开调试界面 ( http://localhost:8079 )
+
+## 单独使用
+
+### 安装
 
 下载最新的[二进制](https://github.com/dcb9/boast/releases)文件
 
-## 使用
+### 使用
 
 ```
 $ cat .boast.json

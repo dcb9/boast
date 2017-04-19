@@ -10,4 +10,5 @@ build : tools
 	go-bindata-assetfs -pkg web assets/... ; mv bindata_assetfs.go web
 
 release : build-fe build
+	cd cmd/
 	goxc -pv="$(v)" -d="$(dest)"
