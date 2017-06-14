@@ -57,6 +57,7 @@
           <div>
             <pre><code>{{ cts.Resp.RawText | base64Decode }}</code></pre>
           </div>
+          <p><a :href="this.responseBodyURL" target="_blank">SHOW RESPONSE IN A NEW TAB</a></p>
         </div>
       </div>
     </div>
@@ -127,18 +128,23 @@
         wsConnected: false,
         wsConn: {},
         downloadCurl: false,
+        host: "",
       }
+    },
+    computed: {
+      responseBodyURL: function() {
+        return `//${this.host}/responses/${this.cts.ID}`
+      },
     },
     created: function() {
       if (this.hasWebSocket) {
-        var wsHost
         if (typeof process.env.WS_HOST == "undefined") {
-          wsHost = window.location.host
+          this.host = window.location.host
         } else {
-          wsHost = process.env.WS_HOST
+          this.host = process.env.WS_HOST
         }
 
-        var conn = new WebSocket("ws://" + wsHost + "/ws");
+        var conn = new WebSocket(`ws://${this.host}/ws`);
         conn.onopen = (evt) => {
           console.log("Connection connected")
           this.wsConnected = true

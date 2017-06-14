@@ -1,6 +1,7 @@
 package ws
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -12,6 +13,7 @@ import (
 	"github.com/dcb9/boast/transaction"
 	"github.com/gorilla/websocket"
 	"github.com/moul/http2curl"
+	"io/ioutil"
 )
 
 var tsHub = transaction.TsHub
@@ -82,12 +84,26 @@ func (c *Client) sendTss(tss []*transaction.Ts) error {
 				rawHeaders = append(rawHeaders, key+": "+strings.Join(vals, ",")+"\r\n")
 			}
 
+			contenType := ts.Resp.Header.Get("Content-Type")
+			var body string
+			if strings.Contains(contenType, "text") ||
+				strings.Contains(contenType, "html") ||
+				strings.Contains(contenType, "xml") ||
+				strings.Contains(contenType, "json") ||
+				strings.Contains(contenType, "javascript") {
+				body = string(ts.Resp.Body)
+			}
+
 			rawResp = fmt.Sprintf(
 				"%s %s\r\n%s\r\n%s",
 				ts.Resp.Proto, ts.Resp.Status,
-				strings.Join(rawHeaders, ""), ts.Resp.Body,
+				strings.Join(rawHeaders, ""), body,
 			)
 		}
+
+		reader := bytes.NewReader(ts.Req.Body)
+		readCloser := ioutil.NopCloser(reader)
+		ts.RawReq.Body = readCloser
 
 		curlCommand, _ := http2curl.GetCurlCommand(ts.RawReq)
 		t := Transaction{
