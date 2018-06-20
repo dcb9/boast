@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"log"
+	"github.com/dcb9/boast/config"
 )
 
 const MAX_TRANSACTIONS_LEN int = 8 * 1024
@@ -20,28 +21,30 @@ var AddChannel chan *Tx = make(chan *Tx)
 type Hub struct {
 	Transactions map[uuid.UUID]*Tx
 	SortID       []uuid.UUID
+	DB *bolt.DB
 }
+var bucket = []byte("transactions")
 
 func NewTxHub() *Hub {
 	hub := &Hub{
 		Transactions: make(map[uuid.UUID]*Tx),
 		SortID:       make([]uuid.UUID, 0, 32*1024),
 	}
-	hub.Init()
+	if dbPath := config.Config.DBPath; dbPath != "" {
+		hub.initDB(dbPath)
+	}
 	return hub
 }
 
-var db *bolt.DB
-
-func (h *Hub) Init() {
+func (h *Hub) initDB(path string) {
 	var err error
-	db, err = bolt.Open("my.db", 0600, nil)
+	h.DB, err = bolt.Open(path, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists([]byte("transactions"))
+	err = h.DB.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists(bucket)
 		if err != nil {
 			return fmt.Errorf("create bucket: %s", err)
 		}
@@ -51,8 +54,8 @@ func (h *Hub) Init() {
 		log.Fatal(err)
 	}
 
-	err = db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("transactions"))
+	err = h.DB.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(bucket)
 		c := b.Cursor()
 
 		for k, v := c.First(); k != nil; k, v = c.Next() {
@@ -87,14 +90,17 @@ func (h *Hub) Add(t Tx) error {
 
 	s.Lock()
 	h.Transactions[t.ID] = &t
-	err := db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("transactions"))
-		bytes, err := json.Marshal(t)
-		if err != nil {
-			return err
-		}
-		return b.Put(t.ID[:], bytes)
-	})
+	var err error
+	if h.DB != nil {
+		err = h.DB.Update(func(tx *bolt.Tx) error {
+			b := tx.Bucket(bucket)
+			bytes, err := json.Marshal(t)
+			if err != nil {
+				return err
+			}
+			return b.Put(t.ID[:], bytes)
+		})
+	}
 	s.Unlock()
 	if err != nil {
 		return err

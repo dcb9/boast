@@ -13,9 +13,14 @@ type RvsPxy struct {
 	URL  string `json:"url"`
 	Addr string `json:"addr"`
 }
+
+var DefaultDBPath = "boast.db"
+
 type JsonConfig struct {
 	DebugAddr string   `json:"debug_addr"`
 	List      []RvsPxy `json:"list"`
+	// it'll persist to DB, if DBPath is not empty
+	DBPath    string `json:"db_path"`
 }
 
 var Config JsonConfig
@@ -39,12 +44,14 @@ func CmdInit() {
 }
 
 func Init(s *httptest.Server, addr, debugAddr string) {
-	Config = JsonConfig{
-		DebugAddr: debugAddr,
-		List: []RvsPxy{
+	Config.DebugAddr = debugAddr
+	Config.List = []RvsPxy{
 			RvsPxy{
 				s.URL, addr,
 			},
-		},
 	}
+}
+
+func SetDBPath(path string) {
+	Config.DBPath = path
 }
