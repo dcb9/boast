@@ -1,8 +1,8 @@
 package boast
 
 import (
-	"net/http/httptest"
 	_ "github.com/dcb9/boast/inits/log"
+	"net/http/httptest"
 
 	"github.com/dcb9/boast/config"
 	"github.com/dcb9/boast/transaction"

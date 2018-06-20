@@ -26,8 +26,8 @@ func (h *Hub) Run() {
 		case client := <-h.unregister:
 			delete(h.clients, client)
 			close(client.send)
-		case ts := <-transaction.AddChannel:
-			tss := []*transaction.Ts{ts}
+		case tx := <-transaction.AddChannel:
+			tss := []*transaction.Tx{tx}
 			for client := range h.clients {
 				select {
 				case client.send <- tss:

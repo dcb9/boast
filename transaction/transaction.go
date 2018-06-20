@@ -27,13 +27,13 @@ type Resp struct {
 	Status string      `json:"Status"`
 }
 
-type Ts struct {
-	ID         uuid.UUID     `json:"ID"`
-	Req        *Req          `json:"Req"`
-	Resp       *Resp         `json:"Resp"`
-	ClientAddr string        `json:"ClientAddr"`
-	BeginAt    time.Time     `json:"BeginAt"`
-	EndAt      time.Time     `json:"EndAt"`
+type Tx struct {
+	ID         uuid.UUID `json:"ID"`
+	Req        *Req      `json:"Req"`
+	Resp       *Resp     `json:"Resp"`
+	ClientAddr string    `json:"ClientAddr"`
+	BeginAt    time.Time `json:"BeginAt"`
+	EndAt      time.Time `json:"EndAt"`
 }
 
 func NewReq(req *http.Request) *Req {

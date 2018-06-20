@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var TsHub = NewHub()
+var TxHub = NewTxHub()
 
 var transport = &Transport{http.DefaultTransport}
 
@@ -30,15 +30,15 @@ func Serve() {
 }
 
 func Replay(id uuid.UUID) {
-	ts := TsHub.Transactions[id]
+	tx := TxHub.Transactions[id]
 
-	body := ioutil.NopCloser(bytes.NewReader(ts.Req.Body))
-	req, err := http.NewRequest(ts.Req.Method, ts.Req.URL.String(), body)
+	body := ioutil.NopCloser(bytes.NewReader(tx.Req.Body))
+	req, err := http.NewRequest(tx.Req.Method, tx.Req.URL.String(), body)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	req.Header = CopyHeader(ts.Req.Header)
+	req.Header = CopyHeader(tx.Req.Header)
 	_, err = transport.RoundTrip(req)
 	if err != nil {
 		log.Println(err)

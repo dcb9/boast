@@ -3,28 +3,28 @@ package transaction
 import (
 	"sync"
 
+	"encoding/json"
+	"fmt"
+	"github.com/boltdb/bolt"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
-	"github.com/boltdb/bolt"
 	"log"
-	"fmt"
-	"encoding/json"
 )
 
 const MAX_TRANSACTIONS_LEN int = 8 * 1024
 
 var s sync.Mutex
 
-var AddChannel chan *Ts = make(chan *Ts)
+var AddChannel chan *Tx = make(chan *Tx)
 
 type Hub struct {
-	Transactions map[uuid.UUID]*Ts
+	Transactions map[uuid.UUID]*Tx
 	SortID       []uuid.UUID
 }
 
-func NewHub() *Hub {
+func NewTxHub() *Hub {
 	hub := &Hub{
-		Transactions: make(map[uuid.UUID]*Ts),
+		Transactions: make(map[uuid.UUID]*Tx),
 		SortID:       make([]uuid.UUID, 0, 32*1024),
 	}
 	hub.Init()
@@ -32,6 +32,7 @@ func NewHub() *Hub {
 }
 
 var db *bolt.DB
+
 func (h *Hub) Init() {
 	var err error
 	db, err = bolt.Open("my.db", 0600, nil)
@@ -55,7 +56,7 @@ func (h *Hub) Init() {
 		c := b.Cursor()
 
 		for k, v := c.First(); k != nil; k, v = c.Next() {
-			var t Ts
+			var t Tx
 			err = json.Unmarshal(v, &t)
 			if err != nil {
 				log.Println("json.Unmarshal err ", err)
@@ -73,7 +74,7 @@ func (h *Hub) Init() {
 	}
 }
 
-func (h *Hub) Add(t Ts) error {
+func (h *Hub) Add(t Tx) error {
 	if t.ID == uuid.Nil {
 		return errors.New("Transcation id MUST BE set.")
 	}
@@ -104,9 +105,9 @@ func (h *Hub) Add(t Ts) error {
 	return nil
 }
 
-func (h *Hub) List() []*Ts {
+func (h *Hub) List() []*Tx {
 	length := len(h.SortID)
-	list := make([]*Ts, 0, len(h.SortID))
+	list := make([]*Tx, 0, len(h.SortID))
 	for i := 0; i < length; i++ {
 		transaction := h.Transactions[h.SortID[i]]
 		list = append(list, transaction)

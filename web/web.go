@@ -5,19 +5,19 @@ import (
 	"log"
 	"net/http"
 
+	"bytes"
 	"fmt"
 	"github.com/dcb9/boast/config"
 	"github.com/dcb9/boast/transaction"
 	"github.com/dcb9/boast/web/ws"
 	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/google/uuid"
-	"strings"
 	"io"
-	"bytes"
+	"strings"
 )
 
 var wsHub = ws.NewHub()
-var tsHub = transaction.TsHub
+var tsHub = transaction.TxHub
 
 func Serve() {
 	go wsHub.Run()

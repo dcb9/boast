@@ -20,10 +20,10 @@
 package web
 
 import (
-	"github.com/elazarl/go-bindata-assetfs"
 	"bytes"
 	"compress/gzip"
 	"fmt"
+	"github.com/elazarl/go-bindata-assetfs"
 	"io"
 	"io/ioutil"
 	"os"
@@ -435,21 +435,21 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"assets/.gitignore": assetsGitignore,
-	"assets/index.html": assetsIndexHtml,
-	"assets/static/css/app.1cb3501b9127e52e452edcf2f64a4522.css": assetsStaticCssApp1cb3501b9127e52e452edcf2f64a4522Css,
+	"assets/.gitignore":                                              assetsGitignore,
+	"assets/index.html":                                              assetsIndexHtml,
+	"assets/static/css/app.1cb3501b9127e52e452edcf2f64a4522.css":     assetsStaticCssApp1cb3501b9127e52e452edcf2f64a4522Css,
 	"assets/static/css/app.1cb3501b9127e52e452edcf2f64a4522.css.map": assetsStaticCssApp1cb3501b9127e52e452edcf2f64a4522CssMap,
-	"assets/static/fonts/fontawesome-webfont.32400f4.eot": assetsStaticFontsFontawesomeWebfont32400f4Eot,
-	"assets/static/fonts/fontawesome-webfont.a35720c.woff": assetsStaticFontsFontawesomeWebfontA35720cWoff,
-	"assets/static/fonts/fontawesome-webfont.a3de217.ttf": assetsStaticFontsFontawesomeWebfontA3de217Ttf,
-	"assets/static/fonts/fontawesome-webfont.db812d8.woff2": assetsStaticFontsFontawesomeWebfontDb812d8Woff2,
-	"assets/static/img/fontawesome-webfont.f775f9c.svg": assetsStaticImgFontawesomeWebfontF775f9cSvg,
-	"assets/static/js/app.a237ca87393862646768.js": assetsStaticJsAppA237ca87393862646768Js,
-	"assets/static/js/app.a237ca87393862646768.js.map": assetsStaticJsAppA237ca87393862646768JsMap,
-	"assets/static/js/manifest.eeb33070069777f4d441.js": assetsStaticJsManifestEeb33070069777f4d441Js,
-	"assets/static/js/manifest.eeb33070069777f4d441.js.map": assetsStaticJsManifestEeb33070069777f4d441JsMap,
-	"assets/static/js/vendor.04d4e6aaa6160a546a53.js": assetsStaticJsVendor04d4e6aaa6160a546a53Js,
-	"assets/static/js/vendor.04d4e6aaa6160a546a53.js.map": assetsStaticJsVendor04d4e6aaa6160a546a53JsMap,
+	"assets/static/fonts/fontawesome-webfont.32400f4.eot":            assetsStaticFontsFontawesomeWebfont32400f4Eot,
+	"assets/static/fonts/fontawesome-webfont.a35720c.woff":           assetsStaticFontsFontawesomeWebfontA35720cWoff,
+	"assets/static/fonts/fontawesome-webfont.a3de217.ttf":            assetsStaticFontsFontawesomeWebfontA3de217Ttf,
+	"assets/static/fonts/fontawesome-webfont.db812d8.woff2":          assetsStaticFontsFontawesomeWebfontDb812d8Woff2,
+	"assets/static/img/fontawesome-webfont.f775f9c.svg":              assetsStaticImgFontawesomeWebfontF775f9cSvg,
+	"assets/static/js/app.a237ca87393862646768.js":                   assetsStaticJsAppA237ca87393862646768Js,
+	"assets/static/js/app.a237ca87393862646768.js.map":               assetsStaticJsAppA237ca87393862646768JsMap,
+	"assets/static/js/manifest.eeb33070069777f4d441.js":              assetsStaticJsManifestEeb33070069777f4d441Js,
+	"assets/static/js/manifest.eeb33070069777f4d441.js.map":          assetsStaticJsManifestEeb33070069777f4d441JsMap,
+	"assets/static/js/vendor.04d4e6aaa6160a546a53.js":                assetsStaticJsVendor04d4e6aaa6160a546a53Js,
+	"assets/static/js/vendor.04d4e6aaa6160a546a53.js.map":            assetsStaticJsVendor04d4e6aaa6160a546a53JsMap,
 }
 
 // AssetDir returns the file names below a certain
@@ -491,31 +491,32 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"assets": &bintree{nil, map[string]*bintree{
 		".gitignore": &bintree{assetsGitignore, map[string]*bintree{}},
 		"index.html": &bintree{assetsIndexHtml, map[string]*bintree{}},
 		"static": &bintree{nil, map[string]*bintree{
 			"css": &bintree{nil, map[string]*bintree{
-				"app.1cb3501b9127e52e452edcf2f64a4522.css": &bintree{assetsStaticCssApp1cb3501b9127e52e452edcf2f64a4522Css, map[string]*bintree{}},
+				"app.1cb3501b9127e52e452edcf2f64a4522.css":     &bintree{assetsStaticCssApp1cb3501b9127e52e452edcf2f64a4522Css, map[string]*bintree{}},
 				"app.1cb3501b9127e52e452edcf2f64a4522.css.map": &bintree{assetsStaticCssApp1cb3501b9127e52e452edcf2f64a4522CssMap, map[string]*bintree{}},
 			}},
 			"fonts": &bintree{nil, map[string]*bintree{
-				"fontawesome-webfont.32400f4.eot": &bintree{assetsStaticFontsFontawesomeWebfont32400f4Eot, map[string]*bintree{}},
-				"fontawesome-webfont.a35720c.woff": &bintree{assetsStaticFontsFontawesomeWebfontA35720cWoff, map[string]*bintree{}},
-				"fontawesome-webfont.a3de217.ttf": &bintree{assetsStaticFontsFontawesomeWebfontA3de217Ttf, map[string]*bintree{}},
+				"fontawesome-webfont.32400f4.eot":   &bintree{assetsStaticFontsFontawesomeWebfont32400f4Eot, map[string]*bintree{}},
+				"fontawesome-webfont.a35720c.woff":  &bintree{assetsStaticFontsFontawesomeWebfontA35720cWoff, map[string]*bintree{}},
+				"fontawesome-webfont.a3de217.ttf":   &bintree{assetsStaticFontsFontawesomeWebfontA3de217Ttf, map[string]*bintree{}},
 				"fontawesome-webfont.db812d8.woff2": &bintree{assetsStaticFontsFontawesomeWebfontDb812d8Woff2, map[string]*bintree{}},
 			}},
 			"img": &bintree{nil, map[string]*bintree{
 				"fontawesome-webfont.f775f9c.svg": &bintree{assetsStaticImgFontawesomeWebfontF775f9cSvg, map[string]*bintree{}},
 			}},
 			"js": &bintree{nil, map[string]*bintree{
-				"app.a237ca87393862646768.js": &bintree{assetsStaticJsAppA237ca87393862646768Js, map[string]*bintree{}},
-				"app.a237ca87393862646768.js.map": &bintree{assetsStaticJsAppA237ca87393862646768JsMap, map[string]*bintree{}},
-				"manifest.eeb33070069777f4d441.js": &bintree{assetsStaticJsManifestEeb33070069777f4d441Js, map[string]*bintree{}},
+				"app.a237ca87393862646768.js":          &bintree{assetsStaticJsAppA237ca87393862646768Js, map[string]*bintree{}},
+				"app.a237ca87393862646768.js.map":      &bintree{assetsStaticJsAppA237ca87393862646768JsMap, map[string]*bintree{}},
+				"manifest.eeb33070069777f4d441.js":     &bintree{assetsStaticJsManifestEeb33070069777f4d441Js, map[string]*bintree{}},
 				"manifest.eeb33070069777f4d441.js.map": &bintree{assetsStaticJsManifestEeb33070069777f4d441JsMap, map[string]*bintree{}},
-				"vendor.04d4e6aaa6160a546a53.js": &bintree{assetsStaticJsVendor04d4e6aaa6160a546a53Js, map[string]*bintree{}},
-				"vendor.04d4e6aaa6160a546a53.js.map": &bintree{assetsStaticJsVendor04d4e6aaa6160a546a53JsMap, map[string]*bintree{}},
+				"vendor.04d4e6aaa6160a546a53.js":       &bintree{assetsStaticJsVendor04d4e6aaa6160a546a53Js, map[string]*bintree{}},
+				"vendor.04d4e6aaa6160a546a53.js.map":   &bintree{assetsStaticJsVendor04d4e6aaa6160a546a53JsMap, map[string]*bintree{}},
 			}},
 		}},
 	}},
@@ -567,7 +568,6 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-
 
 func assetFS() *assetfs.AssetFS {
 	assetInfo := func(path string) (os.FileInfo, error) {

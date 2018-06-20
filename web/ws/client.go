@@ -16,8 +16,6 @@ import (
 	"io/ioutil"
 )
 
-var tsHub = transaction.TsHub
-
 const (
 	writeWait      = 10 * time.Second
 	pongWait       = 60 * time.Second
@@ -28,7 +26,7 @@ const (
 type Client struct {
 	hub  *Hub
 	conn *websocket.Conn
-	send chan []*transaction.Ts
+	send chan []*transaction.Tx
 }
 
 func (c *Client) readPump() {
@@ -59,51 +57,51 @@ func (c *Client) readPump() {
 	}
 }
 
-func (c *Client) sendTss(tss []*transaction.Ts) error {
-	d := make([]Transaction, 0, len(tss))
-	for _, ts := range tss {
+func (c *Client) sendTxs(txs []*transaction.Tx) error {
+	d := make([]Transaction, 0, len(txs))
+	for _, tx := range txs {
 
 		var rawReq string
 		{
-			rawHeaders := make([]string, 0, len(ts.Req.Header))
-			for key, vals := range ts.Req.Header {
+			rawHeaders := make([]string, 0, len(tx.Req.Header))
+			for key, vals := range tx.Req.Header {
 				rawHeaders = append(rawHeaders, key+": "+strings.Join(vals, ",")+"\r\n")
 			}
 
 			rawReq = fmt.Sprintf(
 				"%s %s %s\r\n%s\r\n%s",
-				ts.Req.Method, ts.Req.URL.String(), ts.Req.Proto,
-				strings.Join(rawHeaders, ""), string(ts.Req.Body),
+				tx.Req.Method, tx.Req.URL.String(), tx.Req.Proto,
+				strings.Join(rawHeaders, ""), string(tx.Req.Body),
 			)
 		}
 
 		var rawResp string
 		{
-			rawHeaders := make([]string, 0, len(ts.Resp.Header))
-			for key, vals := range ts.Resp.Header {
+			rawHeaders := make([]string, 0, len(tx.Resp.Header))
+			for key, vals := range tx.Resp.Header {
 				rawHeaders = append(rawHeaders, key+": "+strings.Join(vals, ",")+"\r\n")
 			}
 
-			contenType := ts.Resp.Header.Get("Content-Type")
+			contenType := tx.Resp.Header.Get("Content-Type")
 			var body string
 			if strings.Contains(contenType, "text") ||
 				strings.Contains(contenType, "html") ||
 				strings.Contains(contenType, "xml") ||
 				strings.Contains(contenType, "json") ||
 				strings.Contains(contenType, "javascript") {
-				body = string(ts.Resp.Body)
+				body = string(tx.Resp.Body)
 			}
 
 			rawResp = fmt.Sprintf(
 				"%s %s\r\n%s\r\n%s",
-				ts.Resp.Proto, ts.Resp.Status,
+				tx.Resp.Proto, tx.Resp.Status,
 				strings.Join(rawHeaders, ""), body,
 			)
 		}
 
-		body := ioutil.NopCloser(bytes.NewReader(ts.Req.Body))
-		req, err := http.NewRequest(ts.Req.Method, ts.Req.URL.String(), body)
-		req.Header = transaction.CopyHeader(ts.Req.Header)
+		body := ioutil.NopCloser(bytes.NewReader(tx.Req.Body))
+		req, err := http.NewRequest(tx.Req.Method, tx.Req.URL.String(), body)
+		req.Header = transaction.CopyHeader(tx.Req.Header)
 		if err != nil {
 			log.Println("http.NewRequest err", err)
 			continue
@@ -111,20 +109,20 @@ func (c *Client) sendTss(tss []*transaction.Ts) error {
 
 		curlCommand, _ := http2curl.GetCurlCommand(req)
 		t := Transaction{
-			ID: ts.ID,
+			ID: tx.ID,
 			Request: Request{
-				Method:      ts.Req.Method,
-				Path:        ts.Req.URL.Path,
+				Method:      tx.Req.Method,
+				Path:        tx.Req.URL.Path,
 				RawText:     base64.StdEncoding.EncodeToString([]byte(rawReq)),
 				CurlCommand: base64.StdEncoding.EncodeToString([]byte(curlCommand.String())),
 			},
 			Response: Response{
-				Status:  ts.Resp.Status,
+				Status:  tx.Resp.Status,
 				RawText: base64.StdEncoding.EncodeToString([]byte(rawResp)),
 			},
 			ClientIP: "127.0.0.1",
-			BeginAt:  ts.BeginAt,
-			EndAt:    ts.EndAt,
+			BeginAt:  tx.BeginAt,
+			EndAt:    tx.EndAt,
 		}
 		d = append(d, t)
 	}
@@ -153,7 +151,7 @@ func (c *Client) writePump() {
 		c.conn.Close()
 	}()
 
-	if err := c.sendTss(tsHub.List()); err != nil {
+	if err := c.sendTxs(transaction.TxHub.List()); err != nil {
 		log.Println(err)
 		return
 	}
@@ -167,7 +165,7 @@ func (c *Client) writePump() {
 				return
 			}
 
-			if err := c.sendTss(tss); err != nil {
+			if err := c.sendTxs(tss); err != nil {
 				log.Println(err)
 				return
 			}
@@ -186,7 +184,7 @@ func Serve(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	client := &Client{hub: hub, conn: conn, send: make(chan []*transaction.Ts)}
+	client := &Client{hub: hub, conn: conn, send: make(chan []*transaction.Tx)}
 	client.hub.register <- client
 	go client.writePump()
 	client.readPump()

@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/uuid"
 	"context"
+	"github.com/google/uuid"
 )
 
 var via string
@@ -41,7 +41,7 @@ func (t *Transport) RoundTrip(req *http.Request) (resp *http.Response, err error
 	{
 		id, _ := uuid.NewUUID()
 
-		t := Ts{
+		t := Tx{
 			ID:         id,
 			Req:        tsReq,
 			Resp:       NewResp(resp),
@@ -50,7 +50,7 @@ func (t *Transport) RoundTrip(req *http.Request) (resp *http.Response, err error
 			EndAt:      endAt,
 		}
 
-		go TsHub.Add(t)
+		go TxHub.Add(t)
 	}
 
 	return resp, nil
