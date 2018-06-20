@@ -1,10 +1,8 @@
 package ws
 
 import (
-	"log"
 	"time"
 
-	"github.com/dcb9/boast/transaction"
 	"github.com/google/uuid"
 )
 
@@ -27,20 +25,4 @@ type Transaction struct {
 	ClientIP string    `json:"ClientIP"`
 	BeginAt  time.Time `json:"BeginAt"`
 	EndAt    time.Time `json:"EndAt"`
-}
-
-type ReceivedMessage struct {
-	Action string `json:"Action"`
-	ID     string `json:"ID"`
-}
-
-func (m *ReceivedMessage) Do() {
-	switch m.Action {
-	case "replay":
-		if id, err := uuid.Parse(m.ID); err != nil {
-			log.Println(err)
-		} else {
-			transaction.Replay(id)
-		}
-	}
 }

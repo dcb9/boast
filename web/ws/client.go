@@ -49,11 +49,7 @@ func (c *Client) readPump() {
 			}
 			break
 		}
-		m := &ReceivedMessage{}
-		if err := json.Unmarshal(message, m); err != nil {
-			log.Println(err)
-		}
-		m.Do()
+		log.Println("received message: ", string(message))
 	}
 }
 

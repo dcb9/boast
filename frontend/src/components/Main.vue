@@ -38,10 +38,7 @@
         </div>
         <hr />
         <div>
-          <h3 class="row">
-            <div class="col-4">Request</div>
-            <div class="col-8"><button class="btn replay" v-on:click="replay(cts.ID)">Replay</button></div>
-          </h3>
+          <h3 class="row">Request</h3>
           <div>
             <p><a v-on:click="doDownloadCurl()" href="javascript:;">show cURL command</a></p>
             <span v-if="downloadCurl"><a target="_blank" href="https://www.getpostman.com/docs/importing_curl">Tips</a></span>
@@ -178,9 +175,6 @@
         this.cts = t;
         this.downloadCurl = false;
       },
-      replay: function(id) {
-         this.wsConn.send(JSON.stringify({Action: "replay", ID: id}))
-      },
       doDownloadCurl: function() {
          this.downloadCurl = !this.downloadCurl;
       }
@@ -204,18 +198,8 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-  .replay {
-    cursor: pointer;
-    float:right;
-    border-radius: 0;
-  }
   .alert {
     border-radius: 0;
-  }
-  .replay:hover {
-    background-color: #ff9999;
-    background-color: #000000;
-    color:white;
   }
   .clientIP {
     margin-left: 8px;
