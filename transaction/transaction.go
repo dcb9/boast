@@ -29,7 +29,6 @@ type Resp struct {
 
 type Ts struct {
 	ID         uuid.UUID     `json:"ID"`
-	RawReq     *http.Request `json:"-"`
 	Req        *Req          `json:"Req"`
 	Resp       *Resp         `json:"Resp"`
 	ClientAddr string        `json:"ClientAddr"`
@@ -38,17 +37,22 @@ type Ts struct {
 }
 
 func NewReq(req *http.Request) *Req {
-	url := &url.URL{}
-	*url = *req.URL
+	rURL := new(url.URL)
+	rawReqURL := req.Context().Value("rawRequestURL")
+	if rawReqURL != nil {
+		*rURL = *rawReqURL.(*url.URL)
+	} else {
+		*rURL = *req.URL
+	}
 
 	var body []byte
 	req.Body, body = copyBody(req.Body)
 
 	return &Req{
-		URL:    url,
+		URL:    rURL,
 		Method: req.Method,
 		Proto:  req.Proto,
-		Header: copyHeader(req.Header),
+		Header: CopyHeader(req.Header),
 		Body:   body,
 	}
 }
@@ -65,13 +69,13 @@ func NewResp(resp *http.Response) *Resp {
 
 	return &Resp{
 		Proto:  resp.Proto,
-		Header: copyHeader(resp.Header),
+		Header: CopyHeader(resp.Header),
 		Body:   body,
 		Status: resp.Status,
 	}
 }
 
-func copyHeader(h http.Header) http.Header {
+func CopyHeader(h http.Header) http.Header {
 	header := make(http.Header)
 	for k, v := range h {
 		header[k] = v

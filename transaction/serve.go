@@ -41,7 +41,7 @@ func Replay(id uuid.UUID) {
 		log.Println(err)
 		return
 	}
-	req.Header = copyHeader(ts.Req.Header)
+	req.Header = CopyHeader(ts.Req.Header)
 	_, err = transport.RoundTrip(req)
 	if err != nil {
 		log.Println(err)

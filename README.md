@@ -5,13 +5,15 @@ Boast
 
 "I want track all requests, and replay it easily."
 
-## Usage
+## Integrate with Go HTTP servers
 
 Install the boast package:
 
 `go get github.com/dcb9/boast`
 
 After installing, modify your server file
+
+### with default HTTP server
 
 ```diff
 package main
@@ -30,14 +32,41 @@ func main() {
 		fmt.Fprintf(w, "Welcome to the home page!")
 	}))
 
--	// the old way
+-	// in old way
 -	http.ListenAndServe(":8080", mux)
-+	// the boast way
++	// in boast way
 +	server := httptest.NewServer(mux)
 +	addr, debugAddr := ":8080", ":8079"
 +	boast.Serve(server, addr, debugAddr)
 }
 ```
+
+### with Echo web framework
+
+```diff
+package main
+
+import (
+	"net/http"
+	"net/http/httptest"
+	"github.com/dcb9/boast"
+	"github.com/labstack/echo"
+)
+
+func main() {
+	e := echo.New()
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello, World!")
+	})
+
+-   e.Logger.Fatal(e.Start(":8080"))
++	server := httptest.NewServer(e)
++	addr, debugAddr := ":8080", ":8079"
++	boast.Serve(server, addr, debugAddr)
+}
+```
+
+### Run
 
 Then run your server:
 

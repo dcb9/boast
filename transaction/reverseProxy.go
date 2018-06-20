@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"context"
 )
 
 var via string
@@ -42,7 +43,6 @@ func (t *Transport) RoundTrip(req *http.Request) (resp *http.Response, err error
 
 		t := Ts{
 			ID:         id,
-			RawReq:     req,
 			Req:        tsReq,
 			Resp:       NewResp(resp),
 			ClientAddr: req.RemoteAddr,
@@ -59,6 +59,15 @@ func (t *Transport) RoundTrip(req *http.Request) (resp *http.Response, err error
 func NewSingleHostReverseProxy(target *url.URL) *httputil.ReverseProxy {
 	targetQuery := target.RawQuery
 	director := func(req *http.Request) {
+		rURL := new(url.URL)
+		*rURL = *req.URL
+		rURL.Host = req.Host
+		if rURL.Scheme == "" {
+			rURL.Scheme = "http"
+		}
+		ctx := context.WithValue(req.Context(), "rawRequestURL", rURL)
+		*req = *req.WithContext(ctx)
+
 		req.URL.Scheme = target.Scheme
 		req.URL.Host = target.Host
 		req.URL.Path = singleJoiningSlash(target.Path, req.URL.Path)

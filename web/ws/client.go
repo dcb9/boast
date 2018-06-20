@@ -101,11 +101,15 @@ func (c *Client) sendTss(tss []*transaction.Ts) error {
 			)
 		}
 
-		reader := bytes.NewReader(ts.Req.Body)
-		readCloser := ioutil.NopCloser(reader)
-		ts.RawReq.Body = readCloser
+		body := ioutil.NopCloser(bytes.NewReader(ts.Req.Body))
+		req, err := http.NewRequest(ts.Req.Method, ts.Req.URL.String(), body)
+		req.Header = transaction.CopyHeader(ts.Req.Header)
+		if err != nil {
+			log.Println("http.NewRequest err", err)
+			continue
+		}
 
-		curlCommand, _ := http2curl.GetCurlCommand(ts.RawReq)
+		curlCommand, _ := http2curl.GetCurlCommand(req)
 		t := Transaction{
 			ID: ts.ID,
 			Request: Request{
