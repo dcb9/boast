@@ -11,10 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var TsHub = &Hub{
-	Transactions: make(map[uuid.UUID]*Ts),
-	SortID:       make([]uuid.UUID, 0, 32*1024),
-}
+var TsHub = NewHub()
 
 var transport = &Transport{http.DefaultTransport}
 
